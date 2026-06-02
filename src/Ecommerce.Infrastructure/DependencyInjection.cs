@@ -17,7 +17,7 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString));
 
         services.AddScoped<ICompradorService, CompradorService>();
-
+services.AddScoped<IProdutoService, ProdutoService>();
         return services;
     }
 }
