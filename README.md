@@ -10,7 +10,7 @@ O objetivo do projeto foi atender aos requisitos propostos no desafio técnico, 
 * ASP.NET Core Web API
 * Entity Framework Core 8
 * SQL Server 2022
-* Docker Compose
+* Docker Compose para SQL Server
 * Swagger
 
 ## Estrutura Do Projeto
@@ -47,11 +47,21 @@ Contém o Entity Framework Core, DbContext, migrations e implementações dos se
 * Todo pedido deve possuir pelo menos um item.
 * Cada item deve possuir quantidade maior que zero.
 * O produto informado no item deve existir.
+* Apenas pedidos iniciados podem ser excluídos.
 
 ### Produto
 
 * Nome obrigatório.
 * Preço deve ser maior que zero.
+* Nome limitado a 150 caracteres.
+
+### Comprador
+
+* Nome obrigatório.
+* E-mail obrigatório e com formato válido.
+* Nome limitado a 150 caracteres.
+* E-mail limitado a 200 caracteres.
+* E-mail não pode ser duplicado.
 
 ### Fluxo De Status
 
@@ -99,6 +109,8 @@ Usuário: sa
 Senha: DesafioProtech@22
 ```
 
+Essas credenciais são destinadas exclusivamente ao ambiente local do desafio.
+
 ### 2. Restaurar dependências
 
 ```bash
@@ -112,6 +124,14 @@ dotnet run --project src/Ecommerce.Api
 ```
 
 As migrations são aplicadas automaticamente na inicialização da aplicação.
+
+## Testes
+
+Os testes unitários do domínio estão em `tests/Ecommerce.Domain.Tests`.
+
+```bash
+dotnet test tests/Ecommerce.Domain.Tests/Ecommerce.Domain.Tests.csproj
+```
 
 ## Swagger
 
@@ -178,6 +198,7 @@ GET /api/v1/pedidos?compradorId={guid}
 ## Tratamento De Erros
 
 A aplicação possui middleware global para tratamento de exceções.
+Erros inesperados também são registrados em log com método HTTP, caminho da requisição e TraceId.
 
 Retornos implementados:
 
@@ -192,9 +213,18 @@ Retornos implementados:
 * Arquitetura em camadas
 * Entity Framework Core
 * SQL Server
-* Docker Compose
+* SQL Server disponível via Docker Compose
 * Swagger
 * Health Check
 * Middleware global de exceções
 * Filtro de pedidos por status e comprador
 * Migrations automáticas na inicialização
+* Validações declarativas nos DTOs
+* Índice único para e-mail de comprador
+* Testes unitários das regras de domínio do pedido
+
+## Observações Técnicas
+
+* As datas são preenchidas com `DateTime.UtcNow` de forma padronizada.
+* A API usa `Guid` como identificador das entidades.
+* Os serviços acessam o `ApplicationDbContext` diretamente para manter o escopo do projeto simples.

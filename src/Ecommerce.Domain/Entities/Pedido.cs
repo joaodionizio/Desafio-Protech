@@ -38,4 +38,9 @@ public class Pedido
     {
         return Status == StatusPedido.Processado;
     }
+
+    public bool PodeSerExcluido()
+    {
+        return Status == StatusPedido.Iniciado;
+    }
 }

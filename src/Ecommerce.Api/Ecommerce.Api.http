@@ -1,6 +1,34 @@
-@Ecommerce.Api_HostAddress = http://localhost:5115
+@host = http://localhost:5115
 
-GET {{Ecommerce.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### Health check
+GET {{host}}/health
 
-###
+### Criar comprador
+POST {{host}}/api/v1/compradores
+Content-Type: application/json
+
+{
+  "nome": "Joao Luis",
+  "email": "joao@example.com"
+}
+
+### Listar compradores
+GET {{host}}/api/v1/compradores
+
+### Criar produto
+POST {{host}}/api/v1/produtos
+Content-Type: application/json
+
+{
+  "nome": "Teclado",
+  "preco": 199.90
+}
+
+### Listar produtos
+GET {{host}}/api/v1/produtos
+
+### Listar pedidos
+GET {{host}}/api/v1/pedidos
+
+### Listar pedidos por status
+GET {{host}}/api/v1/pedidos?status=Iniciado

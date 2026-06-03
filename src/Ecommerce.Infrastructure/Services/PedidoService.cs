@@ -37,7 +37,7 @@ public class PedidoService : IPedidoService
             Id = Guid.NewGuid(),
             CompradorId = comprador.Id,
             Status = StatusPedido.Iniciado,
-            DataCriacao = DateTime.Now
+            DataCriacao = DateTime.UtcNow
         };
 
         foreach (var itemRequest in request.Itens)
@@ -157,7 +157,7 @@ public class PedidoService : IPedidoService
             throw new RegraDeNegocioException("Apenas pedidos iniciados podem ser processados.");
 
         pedido.Status = StatusPedido.Processado;
-        pedido.DataAtualizacao = DateTime.Now;
+        pedido.DataAtualizacao = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
     }
@@ -173,7 +173,7 @@ public class PedidoService : IPedidoService
             throw new RegraDeNegocioException("Apenas pedidos processados podem ser enviados.");
 
         pedido.Status = StatusPedido.Enviado;
-        pedido.DataAtualizacao = DateTime.Now;
+        pedido.DataAtualizacao = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
     }
@@ -189,7 +189,7 @@ public class PedidoService : IPedidoService
             throw new RegraDeNegocioException("Apenas pedidos iniciados ou processados podem ser cancelados.");
 
         pedido.Status = StatusPedido.Cancelado;
-        pedido.DataAtualizacao = DateTime.Now;
+        pedido.DataAtualizacao = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
     }
@@ -200,6 +200,9 @@ public class PedidoService : IPedidoService
 
         if (pedido is null)
             throw new EntidadeNaoEncontradaException("Pedido não encontrado.");
+
+        if (!pedido.PodeSerExcluido())
+            throw new RegraDeNegocioException("Apenas pedidos iniciados podem ser excluídos.");
 
         _context.Pedidos.Remove(pedido);
 

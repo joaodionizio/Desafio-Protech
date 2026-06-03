@@ -1,6 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Ecommerce.Application.Dtos.Requests;
 
 public class AtualizarPedidoRequest
 {
+    [Required(ErrorMessage = "Os itens do pedido são obrigatórios.")]
+    [MinLength(1, ErrorMessage = "O pedido deve possuir pelo menos um item.")]
     public List<ItemPedidoRequest> Itens { get; set; } = [];
 }

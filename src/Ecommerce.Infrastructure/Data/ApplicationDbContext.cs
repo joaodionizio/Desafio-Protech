@@ -30,6 +30,9 @@ public class ApplicationDbContext : DbContext
                 .HasMaxLength(200)
                 .IsRequired();
 
+            entity.HasIndex(comprador => comprador.Email)
+                .IsUnique();
+
             entity.HasMany(comprador => comprador.Pedidos)
                 .WithOne(pedido => pedido.Comprador)
                 .HasForeignKey(pedido => pedido.CompradorId)
