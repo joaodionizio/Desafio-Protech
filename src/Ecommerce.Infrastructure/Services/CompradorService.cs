@@ -42,7 +42,7 @@ public class CompradorService : ICompradorService
             Id = Guid.NewGuid(),
             Nome = request.Nome,
             Email = request.Email,
-            DataCriacao = DateTime.UtcNow
+            DataCriacao = DateTime.Now
         };
 
         _context.Compradores.Add(comprador);

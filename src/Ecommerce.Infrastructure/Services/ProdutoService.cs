@@ -34,7 +34,7 @@ public class ProdutoService : IProdutoService
             Id = Guid.NewGuid(),
             Nome = request.Nome,
             Preco = request.Preco,
-            DataCriacao = DateTime.UtcNow
+            DataCriacao = DateTime.Now
         };
 
         _context.Produtos.Add(produto);
