@@ -42,6 +42,9 @@ public class PedidoService : IPedidoService
 
         foreach (var itemRequest in request.Itens)
         {
+            if (itemRequest.ProdutoId == Guid.Empty)
+                throw new RegraDeNegocioException("O produto é obrigatório.");
+
             if (itemRequest.Quantidade <= 0)
                 throw new RegraDeNegocioException("A quantidade do produto deve ser maior que zero.");
 
@@ -119,6 +122,9 @@ public class PedidoService : IPedidoService
 
         foreach (var itemRequest in request.Itens)
         {
+            if (itemRequest.ProdutoId == Guid.Empty)
+                throw new RegraDeNegocioException("O produto é obrigatório.");
+
             if (itemRequest.Quantidade <= 0)
                 throw new RegraDeNegocioException("A quantidade do produto deve ser maior que zero.");
 
@@ -153,7 +159,7 @@ public class PedidoService : IPedidoService
         if (pedido is null)
             throw new EntidadeNaoEncontradaException("Pedido não encontrado.");
 
-        if (pedido.Status != StatusPedido.Iniciado)
+        if (!pedido.PodeSerProcessado())
             throw new RegraDeNegocioException("Apenas pedidos iniciados podem ser processados.");
 
         pedido.Status = StatusPedido.Processado;

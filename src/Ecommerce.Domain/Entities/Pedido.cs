@@ -28,6 +28,11 @@ public class Pedido
         return Status == StatusPedido.Iniciado;
     }
 
+    public bool PodeSerProcessado()
+    {
+        return Status == StatusPedido.Iniciado;
+    }
+
     public bool PodeSerCancelado()
     {
         return Status == StatusPedido.Iniciado ||

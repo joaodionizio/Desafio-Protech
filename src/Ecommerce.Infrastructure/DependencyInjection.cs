@@ -14,11 +14,14 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseSqlServer(
+                connectionString,
+                sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
         services.AddScoped<ICompradorService, CompradorService>();
-		services.AddScoped<IProdutoService, ProdutoService>();
-		services.AddScoped<IPedidoService, PedidoService>();
+        services.AddScoped<IProdutoService, ProdutoService>();
+        services.AddScoped<IPedidoService, PedidoService>();
+
         return services;
     }
 }

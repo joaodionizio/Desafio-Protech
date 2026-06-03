@@ -28,6 +28,22 @@ public class PedidoTests
 
     [Theory]
     [InlineData(StatusPedido.Iniciado, true)]
+    [InlineData(StatusPedido.Processado, false)]
+    [InlineData(StatusPedido.Enviado, false)]
+    [InlineData(StatusPedido.Cancelado, false)]
+    public void PodeSerProcessado_DeveRespeitarStatusDoPedido(
+        StatusPedido status,
+        bool esperado)
+    {
+        var pedido = new Pedido { Status = status };
+
+        var resultado = pedido.PodeSerProcessado();
+
+        Assert.Equal(esperado, resultado);
+    }
+
+    [Theory]
+    [InlineData(StatusPedido.Iniciado, true)]
     [InlineData(StatusPedido.Processado, true)]
     [InlineData(StatusPedido.Enviado, false)]
     [InlineData(StatusPedido.Cancelado, false)]

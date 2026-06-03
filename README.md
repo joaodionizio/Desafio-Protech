@@ -46,6 +46,7 @@ Contém o Entity Framework Core, DbContext, migrations e implementações dos se
 * Todo pedido deve possuir um comprador válido.
 * Todo pedido deve possuir pelo menos um item.
 * Cada item deve possuir quantidade maior que zero.
+* Cada item deve possuir um produto válido.
 * O produto informado no item deve existir.
 * Apenas pedidos iniciados podem ser excluídos.
 
@@ -147,6 +148,22 @@ http://localhost:5115/swagger
 GET /health
 ```
 
+O health check verifica a API e a conexão com o SQL Server.
+
+Exemplo de resposta:
+
+```json
+{
+  "status": "Healthy",
+  "checks": [
+    {
+      "name": "sqlserver",
+      "status": "Healthy"
+    }
+  ]
+}
+```
+
 ## Endpoints
 
 ### Compradores
@@ -215,16 +232,18 @@ Retornos implementados:
 * SQL Server
 * SQL Server disponível via Docker Compose
 * Swagger
-* Health Check
+* Health Check com verificação do SQL Server
 * Middleware global de exceções
 * Filtro de pedidos por status e comprador
 * Migrations automáticas na inicialização
 * Validações declarativas nos DTOs
 * Índice único para e-mail de comprador
+* Retry automático para falhas transitórias do SQL Server
 * Testes unitários das regras de domínio do pedido
 
 ## Observações Técnicas
 
 * As datas são preenchidas com `DateTime.UtcNow` de forma padronizada.
 * A API usa `Guid` como identificador das entidades.
+* A conexão com SQL Server usa `EnableRetryOnFailure()` para aumentar a resiliência contra falhas temporárias.
 * Os serviços acessam o `ApplicationDbContext` diretamente para manter o escopo do projeto simples.

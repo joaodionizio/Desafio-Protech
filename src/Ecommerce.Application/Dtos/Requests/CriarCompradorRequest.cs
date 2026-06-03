@@ -10,6 +10,9 @@ public class CriarCompradorRequest
 
     [Required(ErrorMessage = "O e-mail do comprador é obrigatório.")]
     [EmailAddress(ErrorMessage = "O e-mail do comprador deve possuir um formato válido.")]
+    [RegularExpression(
+        @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+        ErrorMessage = "O e-mail do comprador deve possuir um domínio válido.")]
     [MaxLength(200, ErrorMessage = "O e-mail do comprador deve possuir no máximo 200 caracteres.")]
     public string Email { get; set; } = string.Empty;
 }
