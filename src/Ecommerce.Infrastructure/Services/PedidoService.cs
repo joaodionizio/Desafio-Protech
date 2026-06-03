@@ -118,7 +118,8 @@ public class PedidoService : IPedidoService
         if (request.Itens is null || !request.Itens.Any())
             throw new RegraDeNegocioException("O pedido deve possuir pelo menos um item.");
 
-        pedido.Itens.Clear();
+        var itensAtuais = pedido.Itens.ToList();
+        var novosItens = new List<ItemPedido>();
 
         foreach (var itemRequest in request.Itens)
         {
@@ -137,7 +138,7 @@ public class PedidoService : IPedidoService
             if (produto.Preco <= 0)
                 throw new RegraDeNegocioException("O produto deve possuir preço maior que zero.");
 
-            pedido.Itens.Add(new ItemPedido
+            novosItens.Add(new ItemPedido
             {
                 Id = Guid.NewGuid(),
                 PedidoId = pedido.Id,
@@ -146,6 +147,9 @@ public class PedidoService : IPedidoService
                 PrecoUnitario = produto.Preco
             });
         }
+
+        _context.ItensPedido.RemoveRange(itensAtuais);
+        await _context.ItensPedido.AddRangeAsync(novosItens);
 
         pedido.DataAtualizacao = DateTime.UtcNow;
 
