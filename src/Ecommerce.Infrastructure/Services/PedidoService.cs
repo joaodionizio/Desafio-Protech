@@ -73,8 +73,10 @@ public class PedidoService : IPedidoService
         return await BuscarPorIdAsync(pedido.Id);
     }
 
-    public async Task<List<PedidoResponse>> ListarAsync(PedidoFiltroRequest filtro)
+    public async Task<ResultadoPaginadoResponse<PedidoResponse>> ListarAsync(PedidoFiltroRequest filtro)
     {
+        filtro ??= new PedidoFiltroRequest();
+
         var query = _context.Pedidos
             .AsNoTracking()
             .Include(p => p.Comprador)
@@ -88,11 +90,22 @@ public class PedidoService : IPedidoService
         if (filtro.CompradorId.HasValue)
             query = query.Where(p => p.CompradorId == filtro.CompradorId.Value);
 
+        var totalItens = await query.CountAsync();
+
         var pedidos = await query
             .OrderByDescending(p => p.DataCriacao)
+            .Skip((filtro.Pagina - 1) * filtro.TamanhoPagina)
+            .Take(filtro.TamanhoPagina)
             .ToListAsync();
 
-        return pedidos.Select(MapearParaResponse).ToList();
+        return new ResultadoPaginadoResponse<PedidoResponse>
+        {
+            Items = pedidos.Select(MapearParaResponse).ToList(),
+            PaginaAtual = filtro.Pagina,
+            TamanhoPagina = filtro.TamanhoPagina,
+            TotalItens = totalItens,
+            TotalPaginas = (int)Math.Ceiling(totalItens / (double)filtro.TamanhoPagina)
+        };
     }
 
     public async Task<PedidoResponse> BuscarPorIdAsync(Guid id)
